@@ -94,6 +94,11 @@ class PluginNode(Node):
 
         blackboard = self._deserialize_blackboard(request.blackboard)
 
+        ##test 
+        #if(self.plugin_name=="pilot_person_tracker_node"):
+        #    print("received blackboard:", request.blackboard)
+        ## end test
+
         try:
             status = self.tick(blackboard)
         except Exception as e:
@@ -106,6 +111,12 @@ class PluginNode(Node):
 
         response.status = status.value
         response.blackboard = self._serialize_blackboard(blackboard)
+
+        ##test 
+        #if(self.plugin_name=="pilot_person_tracker_node"):
+        #    print("returned blackboard:", response.blackboard)
+
+        ## end test
 
         return response
 

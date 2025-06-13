@@ -70,6 +70,8 @@ class LandmarkDetectorNode(PluginNode):
 
         self.prev_image_msg = None
 
+        self.frame_counter = 0
+
     def load_parameters(self) -> None:
         self.declare_parameter("img_input_topic", self.img_input_topic)
         self.declare_parameter("landmarks_topic", self.landmarks_topic)
@@ -102,6 +104,7 @@ class LandmarkDetectorNode(PluginNode):
     def img_input_callback(self, msg: Image) -> None:
         self.get_logger().debug("Received image")
         self.received_image_msg = msg
+        self.frame_counter += 1
 
     def _process_image(self) -> None:
         if self.received_image_msg is None:
@@ -124,8 +127,10 @@ class LandmarkDetectorNode(PluginNode):
         self.prev_image_msg = self.received_image_msg
 
     def tick(self, blackboard: Optional[dict["str", Any]] = None) -> NodeState:
+        #print("\n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n")
         try:
-            self._process_image()
+            if self.frame_counter % 10 == 0:
+                self._process_image()
         except Exception as e:
             self.get_logger().error(f"Error processing frame: {e}")
             return NodeState.FAILURE

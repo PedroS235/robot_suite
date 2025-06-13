@@ -1,6 +1,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/ros2,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=ros2,python
 
+# ROS-folders
+build/
+install/
+logs/
+drivers/
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
