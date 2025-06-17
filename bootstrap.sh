@@ -116,7 +116,7 @@ fi
 
 function common_install(){
     # Ensure this script is run as root
-    run_as_root
+    # run_as_root
 
     is_ros_installed
     source "/opt/ros/${ros_distro}/setup.sh" >> /dev/null
@@ -126,7 +126,7 @@ function common_install(){
     # Check if rosdep is installed
     if [ "$(command -v rosdep)" == "" ]; then
         print_warning "rosdep is not installed. Installing it..."
-        
+
         pip install rosdep
         sudo rosdep init
         rosdep update
@@ -144,7 +144,7 @@ function common_install(){
 
 function tello_install(){
     print_info "Installing tellopy from source"
-    install_tellopy 
+    install_tellopy
 
     print_info "Clonning tello_ros2_driver into drivers/"
     git clone https://github.com/snt-arg/tello_ros2_driver.git drivers/tello_ros2_driver
@@ -152,29 +152,29 @@ function tello_install(){
 
 
 case "$1" in
-tello)
-    common_install 
-    tello_install
+    tello)
+        common_install
+        tello_install
 
-    print_info "Building suite"
-    colcon build --symlink-install
-    ;;
-spot)
-    echo "Not yet supported,"
-    exit 1
-    common_install 
-    print_info "Building suite"
-    colcon build --symlink-install
-    ;;
-unitree_go1)
-    echo "Not yet supported,"
-    exit 1
-    common_install 
-    print_info "Building suite"
-    colcon build --symlink-install
-    ;;
-*)
-    echo "Unknown robot: $1."
-    exit 1
-    ;;
+        print_info "Building suite"
+        colcon build --symlink-install
+        ;;
+    spot)
+        echo "Not yet supported,"
+        exit 1
+        common_install
+        print_info "Building suite"
+        colcon build --symlink-install
+        ;;
+    unitree_go1)
+        echo "Not yet supported,"
+        exit 1
+        common_install
+        print_info "Building suite"
+        colcon build --symlink-install
+        ;;
+    *)
+        echo "Unknown robot: $1."
+        exit 1
+        ;;
 esac
