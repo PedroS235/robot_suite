@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>llm_agent</name>
+  <name>robot_agent</name>
   <version>0.0.0</version>
   <description>An LLM Agent for robot_suite built on ROSA</description>
   <maintainer email="ines.pastor.001@sutdent.uni.lu">Ines Pastor</maintainer>

@@ -212,7 +212,7 @@ class ControlStation(Node):
         """
 
         self.get_logger().info("Starting ROSGPT client in a new terminal...")
-        pkg_dir = get_package_prefix("llm_agent")
+        pkg_dir = get_package_prefix("robot_agent")
         if self.nlp_pid is None:
             self.nlp_pid = subprocess.Popen(
                 [
@@ -220,7 +220,7 @@ class ControlStation(Node):
                     "--",
                     "bash",
                     "-c",
-                    f"{pkg_dir}/lib/llm_agent/llm_agent; exec bash",
+                    f"{pkg_dir}/lib/robot_agent/llm_agent; exec bash",
                 ]
             )
 

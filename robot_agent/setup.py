@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = "llm_agent"
+package_name = "robot_agent"
 
 setup(
     name=package_name,
@@ -15,9 +15,9 @@ setup(
     maintainer="Ines Pastor",
     maintainer_email="ines.pastor.001@sutdent.uni.lu",
     description="An LLM Agent for robot_suite built on ROSA",
-    license="TODO: License declaration",
+    license="GPL-3.0",
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": ["llm_agent_node = llm_agent.llm_agent:main"],
+        "console_scripts": ["robot_agent = robot_agent.llm_agent:main"],
     },
 )
