@@ -17,6 +17,7 @@ matching_keys = {
     "h": pygame.K_h,
     "f": pygame.K_f,
     "m": pygame.K_m,
+    "n": pygame.K_n,
     "w": pygame.K_w,
     "s": pygame.K_s,
     "a": pygame.K_a,

@@ -188,6 +188,7 @@ pyrightconfig.json
 ### ROS2 ###
 install/
 log/
+drivers/
 
 # Ignore generated docs
 *.dox
@@ -215,6 +216,7 @@ qtcreator-*
 COLCON_IGNORE
 AMENT_IGNORE
 
-# End of https://www.toptal.com/developers/gitignore/api/ros2,python
+# LLM
+interaction*.txt
 
-drivers/
+# End of https://www.toptal.com/developers/gitignore/api/ros2,python
