@@ -11,7 +11,7 @@ from robot_bt.bootstrap import bootstrap_bt
 
 class BtServerNode(Node):
     _bt_tick_freq: int = 60  # Hz
-    _bt_name: str = "simple_bt"
+    _bt_name: str = "simple_bt" 
     _stop_on_failure: bool = False
     bt: Optional[BehaviourTree]
     _global_blackboard: Client
@@ -36,6 +36,7 @@ class BtServerNode(Node):
             self.bt = BehaviourTree(root=bootstrap_fn(self))
             self.bt.root.attach_blackboard_client("Global")
             self.bt.setup()
+            
         except:
             self.get_logger().error(f"Unable to bootstrap BT -> {self._bt_name}")
             self.bt = None
@@ -67,6 +68,7 @@ class BtServerNode(Node):
                 )
                 time.sleep(5)
                 continue
+
             try:
                 self.bt.tick(post_tick_handler=self.print_tree)
             except Exception as e:

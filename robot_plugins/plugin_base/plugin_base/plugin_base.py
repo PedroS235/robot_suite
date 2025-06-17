@@ -94,6 +94,7 @@ class PluginNode(Node):
 
         blackboard = self._deserialize_blackboard(request.blackboard)
 
+
         try:
             status = self.tick(blackboard)
         except Exception as e:
@@ -106,6 +107,7 @@ class PluginNode(Node):
 
         response.status = status.value
         response.blackboard = self._serialize_blackboard(blackboard)
+
 
         return response
 
