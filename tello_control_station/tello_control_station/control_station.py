@@ -3,7 +3,7 @@ from std_msgs.msg import String, Empty, Bool, Float32
 from sensor_msgs.msg import Image
 from tello_msgs.msg import FlightStats
 from geometry_msgs.msg import Twist
-from plugin_server_base.plugin_base import NodeState
+from plugin_base.plugin_base import NodeState
 from tello_control_station.interface import Interface, matching_keys
 import math
 from typing import Union, Tuple
@@ -220,7 +220,7 @@ class ControlStation(Node):
                     "--",
                     "bash",
                     "-c",
-                    f"{pkg_dir}/lib/robot_agent/llm_agent; exec bash",
+                    f"{pkg_dir}/lib/robot_agent/robot_agent; exec bash",
                 ]
             )
 

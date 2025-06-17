@@ -6,7 +6,7 @@ from rosa import ROSA
 from langchain.agents import tool 
 from std_msgs.msg import String, Empty, Float32
 from geometry_msgs.msg import Twist
-from plugin_server_base.plugin_base import PluginBase
+from plugin_base.plugin_base import PluginNode 
 from tello_msgs.msg import FlipControl, FlightStats
 import asyncio
 import time
@@ -80,7 +80,7 @@ DICTIONARY_YOLO_OBJECTS = {
 }
 
 
-class TelloController(PluginBase):
+class TelloController(PluginNode):
     def __init__(self):
         super().__init__('tello_controller')
         self.warned_low_battery = False
@@ -260,14 +260,11 @@ def remove_palm_land_pub(name: str):
 
 
 
-
 openai_llm = ChatOpenAI(
-    model_name="gpt-4-turbo",  # or your preferred model
+    # model="gpt-4-turbo",  # or your preferred model
     temperature=0,
-    max_tokens=None,
     timeout=None,
     max_retries=2,
-    openai_api_key=os.getenv("OPENAI_KEY"),
 )
 
 
