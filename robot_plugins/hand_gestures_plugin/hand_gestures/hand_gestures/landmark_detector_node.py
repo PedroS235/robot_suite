@@ -70,8 +70,6 @@ class LandmarkDetectorNode(PluginNode):
 
         self.prev_image_msg = None
 
-        self.last_process_time = None
-
         
 
     def load_parameters(self) -> None:
@@ -132,9 +130,7 @@ class LandmarkDetectorNode(PluginNode):
     def tick(self, blackboard: Optional[dict["str", Any]] = None) -> NodeState:
         #print("\n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n")
         try:
-            if self.last_process_time is None or (self.get_clock().now().nanoseconds - self.last_process_time) > 1.:
-                self._process_image()
-                self.last_process_time = self.get_clock().now().nanoseconds
+	    self._process_image()
         except Exception as e:
             self.get_logger().error(f"Error processing frame: {e}")
             return NodeState.FAILURE
