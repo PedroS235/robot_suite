@@ -128,9 +128,8 @@ class LandmarkDetectorNode(PluginNode):
         self.prev_image_msg = self.received_image_msg
 
     def tick(self, blackboard: Optional[dict["str", Any]] = None) -> NodeState:
-        #print("\n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n Hand gesture Ticked \n\n")
         try:
-	    self._process_image()
+            self._process_image()
         except Exception as e:
             self.get_logger().error(f"Error processing frame: {e}")
             return NodeState.FAILURE

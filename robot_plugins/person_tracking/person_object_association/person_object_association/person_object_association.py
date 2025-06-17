@@ -179,7 +179,7 @@ class PersonObjectAssociation(PluginNode):
         self.map_person_to_objects()
         self.publish_person_objects()
         
-        return NodeState.RUNNING
+        return NodeState.SUCCESS
 
 
 def main(args=None):

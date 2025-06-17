@@ -13,7 +13,7 @@ class IsTrackingModeCorrect(py_trees.behaviour.Behaviour):
     def update(self):
         tracking_mode = self.blackboard.tracking_mode
 
-        if tracking_mode.lower() == "llm" and self.plugin_name.lower() == "pperson_object_association_node":
+        if tracking_mode.lower() == "llm" and self.plugin_name.lower() == "person_object_association_node":
             return py_trees.common.Status.SUCCESS
         elif tracking_mode.lower() == "hand" and self.plugin_name.lower() == "landmark_detector_node":
             return py_trees.common.Status.SUCCESS
