@@ -72,7 +72,7 @@ def create_object_detection_plugin_launch(ld: LaunchDescription) -> None:
     pkg_dir = get_package_share_directory("robot_bringup")
     params_file = os.path.join(pkg_dir, "config", "params.yaml")
     object_detection_pck_dir = get_package_share_directory("object_detection_plugin")
-    ld.add_action( 1 conflict 
+    ld.add_action(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(object_detection_pck_dir, "launch/object_detection_launch.py")
