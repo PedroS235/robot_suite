@@ -275,6 +275,7 @@ ollamallm = ChatOllama(
     system_message=(
         "You are a ROS-enabled assistant. When the user asks for a command like 'take off', "
         "use the corresponding tool like `takeoff()`. Do not explain; just act using the tools provided."
+        "If the user asks about the tools, tell him all the available tools and their descriptions. "
     )
 )
 
@@ -309,8 +310,8 @@ def move(linear: List[float], angular: float, duration: int) -> str:
     If the user does not specify a time, assume a default duration of 1 second.
     If the drone's height is below 8 units (e.g., 8dm), it cannot move lower (negative z-axis linear velocity).
 
-    :param linear: A list of 3 floats representing x, y, z velocity in m/s. For forward movement, use [0.5, 0.0, 0.0].
-    :param angular: float velocity in rad/s of the z axis. For turning, use this and set linear to [0.0, 0.0, 0.0].
+    :param linear: A list of 3 floats representing x, y, z velocity in m/s. 
+    :param angular: float velocity in rad/s of the z axis. 
     :param duration: Duration of the movement in seconds.
     '''
     pub = cmd_vel_pubs.get(ROBOT_NAME)
@@ -334,7 +335,7 @@ def move(linear: List[float], angular: float, duration: int) -> str:
         msg_twist.angular.z = angular
 
         # This loop correctly handles the drone's safety watchdog
-        rate = 10  # 10 Hz
+        rate = 10 
         sleep_interval = 1.0 / rate
         start_time = time.time()
         
