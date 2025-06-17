@@ -1,12 +1,16 @@
 from rclpy.node import Node
-from std_msgs.msg import String, Empty
+from std_msgs.msg import String, Empty, Bool, Float32
 from sensor_msgs.msg import Image
 from tello_msgs.msg import FlightStats
 from geometry_msgs.msg import Twist
-from plugin_base.plugin_base import NodeState
+from plugin_server_base.plugin_base import NodeState
 from tello_control_station.interface import Interface, matching_keys
 import math
 from typing import Union, Tuple
+import json
+import threading
+import subprocess
+from ament_index_python import get_package_prefix
 
 
 class ControlStation(Node):
@@ -16,6 +20,7 @@ class ControlStation(Node):
         self.control_mode = "k"
         self.click_pos = None
         self.face_list = []
+        self.nlp_pid = None
 
         # Topics
         self.key_pressed_publisher_topic_name = ""
@@ -63,6 +68,9 @@ class ControlStation(Node):
             self._update_sekeleton_layer,
             1,
         )
+        self.nlp_command_subscriber = self.create_subscription(
+            String, "/text_cmd", self.switch_mode, 10
+        )
 
     def init_timers(self):
         self.timer = self.create_timer(1 / 30, self.tick)
@@ -74,6 +82,37 @@ class ControlStation(Node):
         self.pg_interface.tick()
         self.get_keyboard_input()
         self.get_joystick_input()
+
+    def get_nlp_input(self, mode_command: str):
+        print(mode_command)
+        msg = String()
+        if mode_command == "keyboard":
+            self.pg_interface.update_display_mode("m")
+            self.control_mode = "k"
+            msg.data = "m"
+            self.key_pressed_publisher.publish(msg)
+            self.get_logger().info("control mode switched to keyboard")
+            return NodeState.SUCCESS
+        elif mode_command == "hand":
+            self.control_mode = "h"
+            self.get_logger().info(f"Control mode set to {self.control_mode}")
+            self.pg_interface.update_display_mode("h")
+            msg.data = "h"
+            self.key_pressed_publisher.publish(msg)
+            self.get_logger().info("control mode switched to hand")
+            return NodeState.SUCCESS
+
+        else:
+            self.get_logger().warning(f"Unrecognized mode command: {mode_command}")
+
+    def switch_mode(self, msg: String):
+        mode = msg.data
+        if mode:
+            parsed = json.loads(msg.data)
+            parsed = json.loads(parsed["json"])
+            self.get_nlp_input(parsed[0]["params"]["mode"])
+        else:
+            self.get_logger().warning("Empty mode received in switch_mode")
 
     def get_keyboard_input(self):
         keys = self.pg_interface.get_key_pressed()
@@ -134,6 +173,14 @@ class ControlStation(Node):
             self.key_pressed_publisher.publish(msg)
             self.get_logger().info("control mode switched to manual")
             return NodeState.SUCCESS
+        if keys[matching_keys["n"]]:
+            msg.data = "n"
+            self.control_mode = "n"
+            self.pg_interface.update_display_mode("n")
+            self.key_pressed_publisher.publish(msg)
+            self.get_logger().info("control switched to natural lenguage")
+            threading.Thread(target=self.nlp_terminal).start()
+            return NodeState.SUCCESS
 
         if self.control_mode != "k":
             return NodeState.RUNNING
@@ -157,8 +204,25 @@ class ControlStation(Node):
             vel_msg.angular.z += 0.5
         if keys[matching_keys["right"]]:
             vel_msg.angular.z -= 0.5
-
         self.cmd_vel_publisher.publish(vel_msg)
+
+    def nlp_terminal(self):
+        """
+        Opens a new terminal and runs the ROSGPT client node for natural language processing.
+        """
+
+        self.get_logger().info("Starting ROSGPT client in a new terminal...")
+        pkg_dir = get_package_prefix("llm_agent")
+        if self.nlp_pid is None:
+            self.nlp_pid = subprocess.Popen(
+                [
+                    "gnome-terminal",
+                    "--",
+                    "bash",
+                    "-c",
+                    f"{pkg_dir}/lib/llm_agent/llm_agent; exec bash",
+                ]
+            )
 
     def get_joystick_input(self):
         if self.control_mode != "j":
@@ -245,14 +309,6 @@ class ControlStation(Node):
             )
 
             self.cmd_vel_publisher.publish(msg)
-
-    def get_str_buffer(self):
-        string = ""
-
-        for key in self.buffer:
-            string += key + " "
-
-        return string[:-1] if string else ""
 
     def read_prameters(self):
         self.declare_parameter("cmd_topic_name", "/cmd_vel")
