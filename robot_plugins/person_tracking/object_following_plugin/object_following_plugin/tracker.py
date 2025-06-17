@@ -444,7 +444,7 @@ class Tracker(PluginNode):
         #pass
         #    print("\n","only blackboard: ",blackboard,"war","\n")
         #    print("\n","blackboard attribute: ",blackboard["rotate_robot"],"war","\n")
-          
+        
         """
         if self.test_counter_rotation > 50 and self.test_counter_rotation < 60:
             
@@ -488,6 +488,8 @@ class Tracker(PluginNode):
         else:
                 
             return NodeState.SUCCESS
+        
+        
 
     
         

@@ -167,8 +167,8 @@ class TrackPerson(PluginNode):
         
 
         if self.control_method.lower() == "on/off":
-            self.lower_threshold_midpoint_to_rotate = 0.25
-            self.higher_threshold_midpoint_to_rotate = 0.75
+            self.lower_threshold_midpoint_to_rotate = 0.1
+            self.higher_threshold_midpoint_to_rotate = 0.9
 
             self.threshold_midpoint = 0.5
     
@@ -254,20 +254,20 @@ class TrackPerson(PluginNode):
             # horizontal move
             if self.person_tracked_midpoint.x >= self.lower_threshold_midpoint_to_rotate and self.person_tracked_midpoint.x < self.threshold_midpoint:
                 self.get_logger().debug("move left") #(a in keyboard mode control station) 
-                commands.linear.y += 0.1
+                commands.linear.y += 0.35
                     
             elif self.person_tracked_midpoint.x <= self.higher_threshold_midpoint_to_rotate and  self.person_tracked_midpoint.x > self.threshold_midpoint:
                 self.get_logger().debug("move right") #(d in keyboard mode control station )             
-                commands.linear.y += -0.1
+                commands.linear.y += -0.35
 
             # distance
             if self.bounding_box_size < self.lower_threshold_box_size:
                 self.get_logger().debug("approach") 
-                commands.linear.x += 0.1
+                commands.linear.x += 0.35
 
             elif self.bounding_box_size > self.higher_threshold_box_size:
                 self.get_logger().debug("move back")
-                commands.linear.x += -0.1
+                commands.linear.x += -0.35
 
 
         elif self.control_method.lower() == "pid":

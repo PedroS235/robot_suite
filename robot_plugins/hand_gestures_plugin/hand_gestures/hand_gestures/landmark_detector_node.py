@@ -18,7 +18,7 @@ from ament_index_python import get_package_share_directory
 
 
 class LandmarkDetectorNode(PluginNode):
-    """Node to detect hand landmakrs from an input image
+    """Node to detect hand landmarks from an input image
 
     Subscriptions:
         - /camera/image_raw (sensor_msgs/Image): Input image
@@ -122,6 +122,7 @@ class LandmarkDetectorNode(PluginNode):
         if msg is None:
             return
         msg.header = self.received_image_msg.header
+        print("msg.header: ",msg.header)
         self.landmarks_pub.publish(msg)
 
         self.prev_image_msg = self.received_image_msg

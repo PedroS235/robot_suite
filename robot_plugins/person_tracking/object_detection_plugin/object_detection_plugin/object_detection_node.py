@@ -26,6 +26,7 @@ from typing import Optional, Any
     # YOLOv8 object detection framework
 from ultralytics import YOLO
 
+
     # for sending model to gpu if available
 import torch
 
@@ -36,7 +37,7 @@ class ObjectDetector(PluginNode):
 
     # object detection model
     model_type = 'yolo'
-    model_name = 'yolov8n.pt'
+    model_name = 'yolo11n.pt'#'v5lite-c.pt'
     model = None
     device = None 
     

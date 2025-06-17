@@ -32,6 +32,7 @@ from robot_bt.behaviours.tello.actions.rotate_tello import RotateTello
 from robot_bt.behaviours.shared.actions import PluginClient
 from robot_bt.behaviours.shared.conditions import CanRunPlugin, IsBatteryLow
 from robot_bt.behaviours.shared.conditions.is_tracking_mode_correct import IsTrackingModeCorrect
+from robot_bt.behaviours.shared.conditions.is_rotation_complete import IsRotationComplete
 from robot_bt.behaviours.tello.conditions import IsDroneConnected
 
 
@@ -142,20 +143,27 @@ class PersonTrackingBT(py_trees.composites.Sequence):
                                     memory=False,
                                     children=[
                                         PluginClient("TrackerPlugin", "pilot_person_tracker_node", self.node),
-                                        #PluginClient("CommandsPlugin", "following_commands_node", self.node),
+                                        PluginClient("CommandsPlugin", "following_commands_node", self.node),
                                         #PluginClient("CollisionAvoidancePlugin","collision_avoidance_node",self.node),
                                     ],
                                 ),
-                                RotateTello("RotateTello",self.node),
-                                LandAction("LandPersonLost",self.node),
+                                
+                                py_trees.composites.Sequence(
+                                "RotationControl",
+                                memory=False,
+                                children=[
+                                    IsRotationComplete("IsRotationLessThan360",RotateTello("dummy",self.node)),
+                                    LandAction("LandPersonLost",self.node),
+                                    ],
+                                ),
+                            RotateTello("RotateTello",self.node),
+                            
 
                             ],
                         ),
                     ],
                 ),
                 
-
-
                 ## end Person Tracking Plugin
 
             ],

@@ -7,6 +7,12 @@ install/
 logs/
 drivers/
 
+# ML models
+yolov8n.pt
+nanodet-plus-m-1.5x_416_checkpoint.ckpt
+nanodet_m.ckpt
+
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

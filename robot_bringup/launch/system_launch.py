@@ -164,7 +164,7 @@ def create_video_interface_plugin_launch(ld:LaunchDescription)-> None:
 def generate_launch_description():
     ld = LaunchDescription()
 
-    create_tello_driver_launch(ld)
+    #create_tello_driver_launch(ld)
     create_robot_bt_launch(ld)
     #create_tello_control_station_launch(ld)
 

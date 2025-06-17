@@ -29,7 +29,6 @@ class RotateTello(Action):
 
     rotation_direction : str = None # left or right
 
-    total_rotated_angle = None  # float
 
     commands_topic : str = "/cmd_vel"
 
@@ -45,7 +44,7 @@ class RotateTello(Action):
         actions: Dict["str", Any] = self._global_blackboard.actions
         if actions.get("rotate_robot") is None:
             self.node.get_logger().error("The rotation infos are not yet available!")
-            return py_trees.common.Status.RUNNING
+            return py_trees.common.Status.FAILURE
         else:
             self.node.get_logger().debug("\n*Trying to read the infos from the blackboard*\n")
             if actions["rotate_robot"].get("rotation_direction") is not None :
@@ -57,36 +56,19 @@ class RotateTello(Action):
             if actions["rotate_robot"].get("rotation_speed") is not None :
                 self.rotation_speed = actions["rotate_robot"]["rotation_speed"]
 
-            if actions["rotate_robot"].get("total_rotated_angle") is not None:
-                self.total_rotated_angle = actions["rotate_robot"]["total_rotated_angle"]
                 
-            self.node.get_logger().debug(f"Updated info after potential read from the blackboard:\nDirection : {self.rotation_direction}\nTarget angle : {self.rotation_angle}\nSpeed : {self.rotation_speed}\n**Total rotated angle : {self.total_rotated_angle}**")
+            self.node.get_logger().debug(f"Updated info after potential read from the blackboard:\nDirection : {self.rotation_direction}\nTarget angle : {self.rotation_angle}\nSpeed : {self.rotation_speed}\n")
                 
-        if self.total_rotated_angle is not None and self.total_rotated_angle < 2*pi:
-            if self.rotation_direction is not None and self.rotation_angle is not None and self.rotation_speed is not None:
-                self.commands_callback()
-                self.rotation_direction = None
-                self.rotation_angle = None
-                self.rotation_speed = None
-                self.total_rotated_angle = None
-                return py_trees.common.Status.SUCCESS
-
-            else:
-                self.node.get_logger().error(f"Some rotation information are missing to rotate.\nCurrent values are:\nDirection : {self.rotation_direction}\nTarget angle : {self.rotation_angle}\nSpeed : {self.rotation_speed}\n**Total rotated angle : {self.total_rotated_angle}**")
-                return py_trees.common.Status.RUNNING
-
-        elif self.total_rotated_angle is not None and self.total_rotated_angle >= 2*pi:
-            self.node.get_logger().info("******Rotation exceeded 360°. So the rotate action is failling for the drone to land******")
-
+        
+        if self.rotation_direction is not None and self.rotation_angle is not None and self.rotation_speed is not None:
+            self.commands_callback()
             self.rotation_direction = None
             self.rotation_angle = None
             self.rotation_speed = None
-            self.total_rotated_angle = None
-            
-            return py_trees.common.Status.FAILURE
+            return py_trees.common.Status.SUCCESS
 
         else:
-            self.node.get_logger().error(f"Total rotation angle is missing to rotate.\nCurrent value is:**Total rotated angle : {self.total_rotated_angle}**")
+            self.node.get_logger().error(f"Some rotation information are missing to rotate.\nCurrent values are:\nDirection : {self.rotation_direction}\nTarget angle : {self.rotation_angle}\nSpeed : {self.rotation_speed}\n")
             return py_trees.common.Status.RUNNING
 
 
