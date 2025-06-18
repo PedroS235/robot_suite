@@ -150,7 +150,7 @@ def create_land_takeoff_plugin_launch(ld:LaunchDescription)-> None:
             executable='takeoff_node',
             parameters=[params_file],)
             #prefix='gnome-terminal --',)
-    )json_file_path
+    )
     ld.add_action(
         Node(
             package='object_following_plugin',
