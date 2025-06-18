@@ -56,7 +56,7 @@ class PersonTrackingBT(py_trees.composites.Sequence):
         )
 
         self.plugins_blackboard.selected_plugin = "person_tracking"
-        self.plugins_blackboard.tracking_mode = "llm"
+        self.plugins_blackboard.tracking_mode = "hand" # or "llm" 
 
     def build_tree(self):
         drone_connection = py_trees.composites.Selector(

@@ -69,8 +69,8 @@ class TrackPerson(PluginNode):
     mpc_x_axis = None
 
     # rotation values
-    angular_speed = pi/7
-    target_angle = pi/3
+    angular_speed = pi/10
+    target_angle = pi/7
     
     def __init__(self,name):
         #Creating the Node
