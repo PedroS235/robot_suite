@@ -10,36 +10,18 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def create_tello_driver_launch(ld: LaunchDescription) -> None:
     tello_driver_pkg_dir = get_package_share_directory("tello_driver")
-    pkg_dir = get_package_share_directory("robot_bringup")
-    params_file = os.path.join(pkg_dir, "config", "params.yaml")
 
     ld.add_action(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(tello_driver_pkg_dir, "launch/tello_driver.launch.py")
             ),
-            launch_arguments={
-                "params_file": params_file,
-            }.items(),
         )
     )
 
 
 def create_robot_bt_launch(ld: LaunchDescription) -> None:
-    robot_bt_pkg_dir = get_package_share_directory("robot_bt")
-    pkg_dir = get_package_share_directory("robot_bringup")
-    params_file = os.path.join(pkg_dir, "config", "params.yaml")
-
-    ld.add_action(
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(robot_bt_pkg_dir, "launch/robot_bt_launch.py")
-            ),
-            launch_arguments={
-                "params_file": params_file,
-            }.items(),
-        )
-    )
+    ld.add_action(Node(package="robot_bt", executable="bt_server", output="screen", prefix="gnome-terminal --",))
 
 
 def create_tello_control_station_launch(ld: LaunchDescription) -> None:
@@ -72,7 +54,7 @@ def create_object_detection_plugin_launch(ld: LaunchDescription) -> None:
     pkg_dir = get_package_share_directory("robot_bringup")
     params_file = os.path.join(pkg_dir, "config", "params.yaml")
     object_detection_pck_dir = get_package_share_directory("object_detection_plugin")
-    ld.add_action( 1 conflict 
+    ld.add_action(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(object_detection_pck_dir, "launch/object_detection_launch.py")
@@ -150,7 +132,7 @@ def create_land_takeoff_plugin_launch(ld:LaunchDescription)-> None:
             executable='takeoff_node',
             parameters=[params_file],)
             #prefix='gnome-terminal --',)
-    )json_file_path
+    )
     ld.add_action(
         Node(
             package='object_following_plugin',

@@ -11,7 +11,7 @@ from robot_bt.bootstrap import bootstrap_bt
 
 class BtServerNode(Node):
     _bt_tick_freq: int = 60  # Hz
-    _bt_name: str = "simple_bt" 
+    _bt_name: str = "simple_bt" #"person_tracking_bt"
     _stop_on_failure: bool = False
     bt: Optional[BehaviourTree]
     _global_blackboard: Client
