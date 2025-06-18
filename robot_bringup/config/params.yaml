@@ -17,7 +17,7 @@ landmark_annotator_node:
 tello_driver:
     ros__parameters:
         # Settings
-        alt_limit: 1 #[meters] Altitude limit (default: 30m)
+        alt_limit: 3 #[meters] Altitude limit (default: 30m)
         fast_mode: false
         video_mode: "4:3" # Valid options are "4:3" (wider view) or "16:9" (better quality)
         camera_exposure: 1 # Valid values: 0, 1, 2
@@ -25,6 +25,6 @@ tello_driver:
 
 bt_server:
     ros__parameters:
-        bt_name: default_bt
+        bt_name: person_tracking_bt #default_bt
         tick_freq: 60 # Hz
         stop_on_failure: false # Whether it should stop the tree from executing if the root fails.

@@ -275,6 +275,7 @@ ollamallm = ChatOllama(
     system_message=(
         "You are a ROS-enabled assistant. When the user asks for a command like 'take off', "
         "use the corresponding tool like `takeoff()`. Do not explain; just act using the tools provided."
+        "If the user asks about the tools, tell him all the available tools and their descriptions. "
     )
 )
 
@@ -304,13 +305,22 @@ def takeoff() -> str:
 def move(linear: List[float], angular: float, duration: int) -> str:
     '''
     Move the robot with specified linear and angular velocities for a given duration.
-    To perform this movement the drone must be in the air.
-    If the user does not specify a speed or direction, assume a default forward velocity of 0.5 m/s.
-    If the user does not specify a time, assume a default duration of 1 second.
-    If the drone's height is below 8 units (e.g., 8dm), it cannot move lower (negative z-axis linear velocity).
+    This function controls movement along three axes (x, y, z) and rotation.
 
-    :param linear: A list of 3 floats representing x, y, z velocity in m/s. For forward movement, use [0.5, 0.0, 0.0].
-    :param angular: float velocity in rad/s of the z axis. For turning, use this and set linear to [0.0, 0.0, 0.0].
+    The coordinate system is as follows:
+    - x-axis: +x is forward, -x is backward.
+    - y-axis: +y is left, -y is right.
+    - z-axis: +z is up, -z is down.
+    - angular z-axis: +z is counter-clockwise turn (left), -z is clockwise turn (right).
+
+    To perform this movement, the drone must be in the air.
+    The user may specify a speed (e.g., "velocity 1m/s", "go slowly"). If a speed is provided, use it to set the magnitude of the linear velocity vector. If no speed is specified, use a default of 0.5 m/s.
+    If the user does not specify a time, assume a default duration of 1 second.
+    If the drone's height is below 8 units (8dm), it cannot move down.
+
+    :param linear: A list of 3 floats representing [x, y, z] velocity in m/s. This vector should be constructed based on the user's direction and specified speed.
+                   For example, if the user says "go right at 1.2 m/s", the vector should be [0.0, -1.2, 0.0].
+    :param angular: A float for z-axis angular velocity (rotation).
     :param duration: Duration of the movement in seconds.
     '''
     pub = cmd_vel_pubs.get(ROBOT_NAME)
@@ -334,9 +344,13 @@ def move(linear: List[float], angular: float, duration: int) -> str:
         msg_twist.angular.z = angular
 
         # This loop correctly handles the drone's safety watchdog
-        rate = 10  # 10 Hz
+        rate = 30 
         sleep_interval = 1.0 / rate
         start_time = time.time()
+        
+        print(f"DEBUG: LLM called move() with linear={linear}, angular={angular}, duration={duration}s")
+        
+        
         
         while time.time() - start_time < duration:
             pub.publish(msg_twist)

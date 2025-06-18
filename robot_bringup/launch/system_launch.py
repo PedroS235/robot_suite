@@ -150,7 +150,7 @@ def create_land_takeoff_plugin_launch(ld:LaunchDescription)-> None:
             executable='takeoff_node',
             parameters=[params_file],)
             #prefix='gnome-terminal --',)
-    )json_file_path
+    )
     ld.add_action(
         Node(
             package='object_following_plugin',
@@ -184,7 +184,7 @@ def generate_launch_description():
 
     create_tello_driver_launch(ld)
     create_robot_bt_launch(ld)
-    #create_tello_control_station_launch(ld)
+    create_tello_control_station_launch(ld)
 
     # ------------------
     # -    Plugins     -
