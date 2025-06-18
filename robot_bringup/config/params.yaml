@@ -17,7 +17,7 @@ landmark_annotator_node:
 tello_driver:
     ros__parameters:
         # Settings
-        alt_limit: 1 #[meters] Altitude limit (default: 30m)
+        alt_limit: 3 #[meters] Altitude limit (default: 30m)
         fast_mode: false
         video_mode: "4:3" # Valid options are "4:3" (wider view) or "16:9" (better quality)
         camera_exposure: 1 # Valid values: 0, 1, 2
