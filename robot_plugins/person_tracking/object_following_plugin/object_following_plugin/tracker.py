@@ -38,7 +38,7 @@ class Tracker(PluginNode):
 
 
     # amount of (0,0) midpoints to receive before concluding that the person is lost.  
-    max_no_update_before_lost = 15
+    max_no_update_before_lost = 100
 
     max_length_midpoint_queue = 2
 
@@ -56,8 +56,8 @@ class Tracker(PluginNode):
     target_class = "person"
     min_overlap = 0.09
 
-    rotation_speed = pi/3
-    rotation_angle = pi/3
+    rotation_speed = pi/7
+    rotation_angle = pi/7
 
 
 

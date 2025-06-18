@@ -111,7 +111,7 @@ class ObjectDetector(PluginNode):
 ################################ Init functions ##################################################################################
     def _init_model(self)->None:
         """Method to initialize the object detection model based on its type and name.
-        Right now, one signle type is supported : 'yolo' """
+        Right now, one single type is supported : 'yolo' """
         match self.model_type.lower():
 
             case "yolo":
@@ -205,13 +205,13 @@ class ObjectDetector(PluginNode):
         Then converts that image into cv2 format before performing object detection on that image and saving 
         the result in self.image_all_detected"""
         # Log
-        self.get_logger().info(f"Frame N°{self.frame_counter} received")
+        self.get_logger().debug(f"Frame N°{self.frame_counter} received")
 
         # processing only a fraction of frames to reduce computing power consumption
         if self.frame_counter % self.process_frames == 0:
             
             # Logs
-            self.get_logger().info(f"Frame N°{self.frame_counter} processed")
+            self.get_logger().debug(f"Frame N°{self.frame_counter} processed")
             
             # performing object detection
             self.image_raw = self.cv_bridge.imgmsg_to_cv2(img,"rgb8") # converting ROS Image message to cv2 image
@@ -265,7 +265,7 @@ class ObjectDetector(PluginNode):
             self.get_logger().info("Can't publish frames on which object detection was performed.\n No image has been received from the drone yet")    
         else:
             self.publisher_all_detected.publish(self.cv_bridge.cv2_to_imgmsg(self.image_all_detected, 'rgb8')) 
-            self.get_logger().info("Publishing a frame on all detected topic")
+            self.get_logger().debug("Publishing a frame on all detected topic")
             
     
     def bounding_boxes_callback(self)->None:
@@ -277,7 +277,7 @@ class ObjectDetector(PluginNode):
             self.get_logger().info("Can't publish bounding boxes. No information received yet")    
         else:
             self.publisher_bounding_boxes.publish(self.boxes)
-            self.get_logger().info("\n##############################################\nPublishing a bounding boxes list\n\n")
+            self.get_logger().debug("\n##############################################\nPublishing a bounding boxes list\n\n")
    
 
     def yolo_box_to_Box_msg(self,yolo_box, yolo_class, yolo_id):
