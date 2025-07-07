@@ -213,3 +213,53 @@ The structure and purpose of each part of the tree are as follows:
     def bootstrap(ros_node: Node) -> py_trees.behaviour.Behaviour:
         return DefaultBT(ros_node)
     ```
+
+## Behavior Tree Execution Flow - Example : Person tracking
+
+The figure below shows the execution flow of the **Behavior Tree (BT)** when the **person tracking plugin** is active. Only branches highlighted in orange are executed.
+
+![BT Flow Execution](./BT%20structure%20flow.png)
+
+### Step-by-Step Flow
+
+- **Connection Check**  
+  → Branch 1 checks if the drone is connected.  
+  ✅ If successful, continue.
+
+- **Battery Check**  
+  → Branch 2 checks if the battery level is sufficient.  
+  ❌ If not, fallback to Branch 3 to land the drone.  
+  ✅ If OK, continue.
+
+- **Plugin Selection by Operator**  
+  → Branch 4 allows the remote operator to select a plugin via a blackboard variable.  
+  → In this example, the value is set to `"person_tracking"`.
+
+- **Hand Gesture Plugin Check (Skipped)**  
+  → Branch 5 checks if `"hand_gesture"` plugin was selected.  
+  ❌ Fails (wrong plugin), so Branches 6 and 7 are not executed.
+
+- **Person Tracking Plugin Check**  
+  → Branch 8 checks if `"person_tracking"` plugin can be executed.  
+  ✅ Success → proceed to Branch 9.
+
+- **Object Detection Plugin**  
+  → Branch 9 runs real-time object detection on drone video.  
+  ✅ Always returns success.
+
+- **Target Selection Mode**  
+  → Branches 10–14 decide **how** the target person is selected:
+  - **LLM interface** → executes Branches 10 and 11. ✅ *(used in this example)*
+  - **Hand gesture** → would trigger Branches 12, 13, 14. ❌ *(not used)*
+
+- **Tracking Execution**
+  → Branch 15 identifies the person and publishes their position.  
+  ✅ If tracking succeeds, go to Branch 16.
+
+- **Tracking Control**
+  → Branch 16 calculates velocity commands to follow the target with the drone camera.  
+  ❌ If tracking fails (Branch 15 fails), fallback to:
+
+- **Recovery and Fallback**
+  → Branches 17 and 18 rotate the drone to search for the target.  
+  → If still not found, Branch 19 triggers a landing.
