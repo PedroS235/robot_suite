@@ -170,6 +170,7 @@ class PersonTrackingBT(py_trees.composites.Sequence):
         )
 
         self.add_children([drone_connection, battery_checker, remote_operator, plugins])
+        #self.add_children([drone_connection, battery_checker, remote_operator])
 
         #test
         #self.add_children([remote_operator, plugins])

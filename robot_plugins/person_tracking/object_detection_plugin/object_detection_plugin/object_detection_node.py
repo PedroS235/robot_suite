@@ -44,7 +44,7 @@ class ObjectDetector(PluginNode):
 
     # classes of interest (for detection)
     person_classes = ["person"] # person class names
-    objects = ["cell phone"] # list of objects 
+    objects = ["cell phone","backpack","book","laptop", "handbag"] # list of objects 
     classes = None
     
     # minimum confidence probability for a detection to be accepted
@@ -300,9 +300,6 @@ class ObjectDetector(PluginNode):
         It gets called 20 times a second if state=RUNNING
         Here we call callback functions to publish a detection frame and the list of bounding boxes.
         """
-        print("\nTicking.....\n")
-        print("\nTicking.....\n")
-        print("\nTicking.....\n")
 
         self.all_detected_callback()
         self.bounding_boxes_callback()

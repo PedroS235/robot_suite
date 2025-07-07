@@ -54,7 +54,8 @@ class TrackPerson(PluginNode):
     # on-off parameters
     lower_threshold_midpoint_to_rotate = None
     higher_threshold_midpoint_to_rotate = None
-    threshold_midpoint = None
+    lower_threshold_midpoint = None
+    higher_threshold_midpoint = None
 
     lower_threshold_box_size = None
     higher_threshold_box_size = None
@@ -70,7 +71,7 @@ class TrackPerson(PluginNode):
 
     # rotation values
     angular_speed = pi/10
-    target_angle = pi/7
+    target_angle = pi/15
     
     def __init__(self,name):
         #Creating the Node
@@ -167,13 +168,15 @@ class TrackPerson(PluginNode):
         
 
         if self.control_method.lower() == "on/off":
-            self.lower_threshold_midpoint_to_rotate = 0.1
-            self.higher_threshold_midpoint_to_rotate = 0.9
+            self.lower_threshold_midpoint_to_rotate = 0.20
+            self.higher_threshold_midpoint_to_rotate = 0.8
 
-            self.threshold_midpoint = 0.5
+            #self.threshold_midpoint = 0.5
+            self.lower_threshold_midpoint = 0.4
+            self.higher_threshold_midpoint = 0.6
     
-            self.lower_threshold_box_size = 0.9
-            self.higher_threshold_box_size = 1.2
+            self.lower_threshold_box_size = 1
+            self.higher_threshold_box_size = 1.1
 
         elif self.control_method.lower() == "pid":
             self.pid_y_axis = PID(0.5,(0.1,0.1,0),(-0.25,0.25)) # Controller for y axis (horizontal position to keep the person within the field of view)
@@ -252,13 +255,13 @@ class TrackPerson(PluginNode):
         if self.control_method.lower() == "on/off":
             
             # horizontal move
-            if self.person_tracked_midpoint.x >= self.lower_threshold_midpoint_to_rotate and self.person_tracked_midpoint.x < self.threshold_midpoint:
+            if self.person_tracked_midpoint.x >= self.lower_threshold_midpoint_to_rotate and self.person_tracked_midpoint.x <= self.lower_threshold_midpoint:
                 self.get_logger().debug("move left") #(a in keyboard mode control station) 
-                commands.linear.y += 0.35
+                commands.linear.y += 0.25
                     
-            elif self.person_tracked_midpoint.x <= self.higher_threshold_midpoint_to_rotate and  self.person_tracked_midpoint.x > self.threshold_midpoint:
+            elif self.person_tracked_midpoint.x <= self.higher_threshold_midpoint_to_rotate and  self.person_tracked_midpoint.x >= self.higher_threshold_midpoint:
                 self.get_logger().debug("move right") #(d in keyboard mode control station )             
-                commands.linear.y += -0.35
+                commands.linear.y += -0.25
 
             # distance
             if self.bounding_box_size < self.lower_threshold_box_size:
@@ -268,6 +271,8 @@ class TrackPerson(PluginNode):
             elif self.bounding_box_size > self.higher_threshold_box_size:
                 self.get_logger().debug("move back")
                 commands.linear.x += -0.35
+
+
 
 
         elif self.control_method.lower() == "pid":
@@ -407,7 +412,8 @@ def main(args=None):
     #Intialization ROS communication 
     rclpy.init(args=args)
     track_person = TrackPerson('following_commands_node')
-    track_person.get_logger().set_level(rclpy.logging.LoggingSeverity.DEBUG)
+
+    #track_person.get_logger().set_level(rclpy.logging.LoggingSeverity.DEBUG)
 
     #execute the callback function until the global executor is shutdown
     rclpy.spin(track_person)

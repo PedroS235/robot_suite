@@ -165,7 +165,6 @@ class DrawTarget(Node):
         if raw_image is not None and self.pilot_box is not None:
            
             midpoint = calculate_midpoint_box(self.pilot_box)
-    
 
             top_left_point = (round(self.pilot_box.top_left.x * self.image_width),round(self.pilot_box.top_left.y * self.image_height))
             bottom_right_point = (round(self.pilot_box.bottom_right.x * self.image_width),round(self.pilot_box.bottom_right.y * self.image_height))

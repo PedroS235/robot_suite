@@ -143,7 +143,9 @@ class LandmarkFilter(PluginNode):
                 if self.check_gesture(msg,False):
                     infodict = convert_Landmarks_to_dict(msg)
                     infodict["action"] = "stop_tracking"
-                    self.publisher_tracking_signal.publish(json.dumps(infodict))
+                    tracking_signal_msg = String()
+                    tracking_signal_msg.data = json.dumps(infodict)
+                    self.publisher_tracking_signal.publish(tracking_signal_msg)
 
                 if self.is_gesture_from_pilot(msg):
                     self.get_logger().info(f"\n\n\n\n\n\n##########################################\nPilot person did a gesture !! It is {msg.right_hand.gesture} and {msg.left_hand.gesture}")
