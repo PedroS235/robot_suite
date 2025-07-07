@@ -139,7 +139,7 @@ class PersonTrackingBT(py_trees.composites.Sequence):
                             memory=False,
                             children=[
                                 py_trees.composites.Sequence(
-                                    "FollowingPlugin",
+                                    "FollowingControl",
                                     memory=False,
                                     children=[
                                         PluginClient("TrackerPlugin", "pilot_person_tracker_node", self.node),
@@ -152,7 +152,7 @@ class PersonTrackingBT(py_trees.composites.Sequence):
                                 "RotationControl",
                                 memory=False,
                                 children=[
-                                    IsRotationComplete("IsRotationLessThan360",RotateTello("dummy",self.node)),
+                                    IsRotationComplete("IsRotationComplete",RotateTello("dummy",self.node)),
                                     LandAction("LandPersonLost",self.node),
                                     ],
                                 ),
