@@ -505,7 +505,7 @@ def main(args=None):
     #Node instantiation
     tracker = Tracker('pilot_person_tracker_node')
 
-    tracker.get_logger().set_level(rclpy.logging.LoggingSeverity.DEBUG)
+    #tracker.get_logger().set_level(rclpy.logging.LoggingSeverity.DEBUG)
 
     #Execute the callback function until the global executor is shutdown
     rclpy.spin(tracker)

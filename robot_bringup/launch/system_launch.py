@@ -102,15 +102,15 @@ def create_object_following_plugin_launch(ld:LaunchDescription)-> None:
         Node(
             package='object_following_plugin',
             executable='tracker_node',
-            parameters=[params_file],
-            prefix='gnome-terminal --',)
+            parameters=[params_file],)
+           # prefix='gnome-terminal --',)
     )
     ld.add_action(
         Node(
             package='object_following_plugin',
             executable='following_commands_node',
-            parameters=[params_file],
-            prefix='gnome-terminal --',)
+            parameters=[params_file],)
+            #prefix='gnome-terminal --',)
     )
     
     #ld.add_action(
@@ -163,13 +163,13 @@ def create_video_interface_plugin_launch(ld:LaunchDescription)-> None:
     pkg_dir = get_package_share_directory("robot_bringup")
     params_file = os.path.join(pkg_dir, "config", "params.yaml")
     #pck_dir = get_package_share_directory("object_following_plugin")
-    ld.add_action(
-        Node(
-            package='video_interface_plugin',
-            executable='video_interface_node',
-            parameters=[params_file],)
+    #ld.add_action(
+    #    Node(
+    #        package='video_interface_plugin',
+    #        executable='video_interface_node',
+    #        parameters=[params_file],)
             #prefix='gnome-terminal --',)
-    )
+    #)
     ld.add_action(
         Node(
             package='drawer_plugin',
@@ -184,7 +184,7 @@ def generate_launch_description():
 
     create_tello_driver_launch(ld)
     create_robot_bt_launch(ld)
-    create_tello_control_station_launch(ld)
+    #create_tello_control_station_launch(ld)
 
     # ------------------
     # -    Plugins     -
