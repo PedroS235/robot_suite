@@ -216,50 +216,52 @@ The structure and purpose of each part of the tree are as follows:
 
 ## Behavior Tree Execution Flow - Example : Person tracking
 
-The figure below shows the execution flow of the **Behavior Tree (BT)** when the **person tracking plugin** is active. Only branches highlighted in orange are executed.
+The figure below shows the execution flow of the **Behavior Tree (BT)** when the **person tracking plugin** is active. Only branches highlighted in **orange** are executed.
 
-![BT Flow Execution](./BT%20structure%20flow.png)
+This flow shows the execution of the `PersonTrackingBT` when:
+- `selected_plugin = "person_tracking"`
+- `tracking_mode = "hand"`
+
+![BT Flow Execution](../assets/BTFlow.png)
 
 ### Step-by-Step Flow
+From left to right:
 
-- **Connection Check**  
-  → Branch 1 checks if the drone is connected.  
-  ✅ If successful, continue.
+* **Branch 1**: Checks if the connection with the drone is established — it succeeds.
+* **Branch 2**: Verifies that battery level is sufficient — it succeeds. 
+  * If it had failed, the selector parent would have executed **Branch 3**, causing the drone to land.
+* **Branch 4**: Remote Operator selects which plugin to run by setting the `selected_plugin` blackboard variable.
+* **Branch 5**: Checks if the *hand gesture plugin* is the selected plugin.  
+  * It fails because the `selected_plugin` variable is set to `"person_tracking"`, so:  
+    * **Branches 6 and 7** (plugin client for the hand gesture plugin and the gesture interpreter action) are **not executed**.
+* **Branch 8**: Checks if the *person tracking* plugin is selected — it succeeds.
+* **Branch 9**: Ticks the plugin client for real-time object detection — if executed, it always succeeds.
+* **Branches 10 to 14**: Target selection logic. Only one selection mode is active.  
+  * If `tracking_mode` is `llm`: **Branches 10 and 11** are executed, ticking `PersonObjectAssociatorPlugin`.
+  * If `tracking_mode` is `hand`: **Branches 12, 13, and 14** are executed, ticking `HandGesturesPlugin` and `SignFilterPlugin`.  
 
-- **Battery Check**  
-  → Branch 2 checks if the battery level is sufficient.  
-  ❌ If not, fallback to Branch 3 to land the drone.  
-  ✅ If OK, continue.
+  In our case, the `tracking_mode` is `llm`, so **Branches 10 and 11** are executed and succeed while **Branches 12, 13 and 14** are skipped.
+* **Branch 15**: Identifies the target from video frames and publishes its position. It succeeds as long as it finds the target. Thus in the example provided, it succeeds.
+* **Branch 16**: Receives the target position and computes drone velocity commands to follow the target — if executed, it always succeeds.
 
-- **Plugin Selection by Operator**  
-  → Branch 4 allows the remote operator to select a plugin via a blackboard variable.  
-  → In this example, the value is set to `"person_tracking"`.
+* If **Branch 15** had failed:  
+  * **Branches 17 to 19** would have been executed, causing the drone to rotate to search for the target and lands after a full 360° turn.
 
-- **Hand Gesture Plugin Check (Skipped)**  
-  → Branch 5 checks if `"hand_gesture"` plugin was selected.  
-  ❌ Fails (wrong plugin), so Branches 6 and 7 are not executed.
 
-- **Person Tracking Plugin Check**  
-  → Branch 8 checks if `"person_tracking"` plugin can be executed.  
-  ✅ Success → proceed to Branch 9.
+### ✅ Summary Table
 
-- **Object Detection Plugin**  
-  → Branch 9 runs real-time object detection on drone video.  
-  ✅ Always returns success.
+| Branch                     | Status     | Purpose/Result                                                                 |
+|----------------------------|------------|--------------------------------------------------------------------------------|
+| **DroneConnection**        | ✅ Success | Drone is connected.                                                            |
+| **BatteryChecker**         | ✅ Success | Battery is good. No need to land.                                              |
+| **RemoteOperator**         | ✅ Success | Sets the `selected_plugin` variable.                                           |
+| **HandGesturesControl**    | ❌ Failed  | Not selected. Fails.                                                           |
+| **PersonTrackingControl**  | ✅ Success | Person tracking plugin is selected and active.                                 |
+| ├── **LLMMode**            | ✅ Success | Tracking mode is `llm`, LLM interface used to select target.                   |
+| ├── **HandMode**           | ⏭️ Skipped | Not in `hand` mode. Skipped.                                                   |
+| ├── **FollowingPlugin**    | ✅ Success | Object detected, tracking works, and drone follows target.                     |
+| └── **RotationRecovery**   | ⏭️ Skipped | Tracking succeeded, so recovery behavior not needed.                           |
 
-- **Target Selection Mode**  
-  → Branches 10–14 decide **how** the target person is selected:
-  - **LLM interface** → executes Branches 10 and 11. ✅ *(used in this example)*
-  - **Hand gesture** → would trigger Branches 12, 13, 14. ❌ *(not used)*
+---
 
-- **Tracking Execution**
-  → Branch 15 identifies the person and publishes their position.  
-  ✅ If tracking succeeds, go to Branch 16.
 
-- **Tracking Control**
-  → Branch 16 calculates velocity commands to follow the target with the drone camera.  
-  ❌ If tracking fails (Branch 15 fails), fallback to:
-
-- **Recovery and Fallback**
-  → Branches 17 and 18 rotate the drone to search for the target.  
-  → If still not found, Branch 19 triggers a landing.
