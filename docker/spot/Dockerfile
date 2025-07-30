@@ -11,7 +11,7 @@ RUN apt update && \
 # Copy Robot Suite
 COPY . /workspace/src/robot_suite
 
-RUN sh bootstrap.sh tello
+RUN sh bootstrap.sh spot
 
 # Colcon build + source
 # WORKDIR /workspace
@@ -33,3 +33,4 @@ WORKDIR /workspace/src/robot_suite
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
+
