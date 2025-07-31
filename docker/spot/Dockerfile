@@ -1,21 +1,21 @@
 FROM ros:humble
 
-ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp 
+# Set this in the compose file instead
+# ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp 
 
 # Install necessary and useful packages
 RUN apt update && \
     apt install --no-install-recommends -y \
     ssh vim python3-pip python3-vcstool wget git iputils-ping \
-    ros-$ROS_DISTRO-cv-bridge ros-$ROS_DISTRO-rmw-cyclonedds-cpp 
+    ros-$ROS_DISTRO-cv-bridge ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    ros-$ROS_DISTRO-image-transport
 
 # Copy Robot Suite
 COPY . /workspace/src/robot_suite
 
-RUN sh bootstrap.sh spot
-
-# Colcon build + source
-# WORKDIR /workspace
-# RUN . /opt/ros/humble/setup.sh && colcon build
+WORKDIR /workspace/src/robot_suite
+SHELL ["/bin/bash", "-c"]
+RUN ./bootstrap.sh spot
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "source /workspace/install/setup.bash" >> ~/.bashrc

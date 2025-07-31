@@ -136,7 +136,7 @@ function common_install(){
     fi
 
     print_info "Installing dependencies for ROS packages"
-    rosdep install --from-paths src --ignore-src -y
+    rosdep install --from-paths . -y
 
     print_info "Installing dependencies for the project"
     pip install -r requirements.txt
@@ -165,15 +165,16 @@ function spot_install(){
 
 case "$1" in
     tello)
-        common_install
         tello_install
+        common_install
 
         print_info "Building suite"
         colcon build --symlink-install
         ;;
     spot)
-        common_install
         spot_install
+        common_install
+
         print_info "Building suite"
         colcon build --symlink-install
         ;;
